@@ -10,16 +10,16 @@ namespace LuckySpin.Controllers
     public class SpinnerController : Controller
     {
         Random random;
-        Repository repository;
+        Repository _repository;
 
         /***
          * Controller Constructor
          */
-        public SpinnerController()
+        public SpinnerController(Repository repository) //Pass respository as parameter as we have address Repository as a singleton, as long as we have registered this in the startup file
         {
             random = new Random();
             //TODO: Inject the Repository singleton
-            repository = new Repository();
+            _repository = repository;
         }
 
         /***
@@ -58,7 +58,7 @@ namespace LuckySpin.Controllers
             spin.IsWinning = (spin.A == spin.Luck || spin.B == spin.Luck || spin.C == spin.Luck);
 
             //Add to Spin Repository
-            repository.AddSpin(spin);
+            _repository.AddSpin(spin);
 
             //TODO: Clean up ViewBag using a SpinIt ViewModel instead
             ViewBag.ImgDisplay = (spin.IsWinning) ? "block" : "none";
@@ -73,7 +73,7 @@ namespace LuckySpin.Controllers
          **/
          public IActionResult LuckList()
         {
-                return View(repository.PlayerSpins);
+                return View(_repository.PlayerSpins);
         }
     }
 }
