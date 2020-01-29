@@ -8,7 +8,7 @@ namespace LuckySpin.ViewModels
     public class IndexViewModel
     {
         public string FirstName { get; set; }
-        public int LuckyNumber { get; set; }
-        public decimal MyProperty { get; set; }
+        public int Luck { get; set; }
+        public decimal StartingBalance { get; set; }
     }
 }
