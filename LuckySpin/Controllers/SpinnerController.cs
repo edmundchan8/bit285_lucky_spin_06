@@ -45,7 +45,7 @@ namespace LuckySpin.Controllers
             spinVM.CurrentBalance = _repository._player.StartingBalance;
             spinVM.Luck = _repository._player.Luck;
             _repository._player.Balance = spinVM.CurrentBalance;
-
+            _repository.ResetSpin();
 
             return RedirectToAction("SpinIt", spinVM);
         }
@@ -55,29 +55,29 @@ namespace LuckySpin.Controllers
          **/
         public IActionResult SpinIt(SpinViewModel spinVM) //TODO: replace the parameter with a ViewModel
         {
-            SpinViewModel spin = new SpinViewModel
-            {
-                Luck = spinVM.Luck,
-                A = random.Next(1, 10),
-                B = random.Next(1, 10),
-                C = random.Next(1, 10)
-            };
-
-
-            spin.Winner = (spin.A == spin.Luck || spin.B == spin.Luck || spin.C == spin.Luck);
-            if (spin.Winner)
-                _repository._player.CollectWinnings();
-            
-            //Add to Spin Repository
-            _repository.AddSpin(spin);
-
-            //TODO: Clean up ViewBag using a SpinIt ViewModel instead
-            ViewBag.ImgDisplay = (spin.Winner) ? "block" : "none";
-            ViewBag.FirstName = spinVM.FirstName;
-            ViewBag.Balance = _repository._player.Balance;
-
             if (_repository._player.ChargeSpin())
-                return View("SpinIt", spin);
+            {
+                SpinViewModel spin = new SpinViewModel
+                {
+                    Luck = spinVM.Luck,
+                    A = random.Next(1, 10),
+                    B = random.Next(1, 10),
+                    C = random.Next(1, 10)
+                };
+
+                //Add to Spin Repository
+                _repository.AddSpin(spin);
+
+                spin.Winner = (spin.A == spin.Luck || spin.B == spin.Luck || spin.C == spin.Luck);
+                if (spin.Winner)
+                    _repository._player.CollectWinnings();
+
+                //TODO: Clean up ViewBag using a SpinIt ViewModel instead
+                ViewBag.ImgDisplay = (spin.Winner) ? "block" : "none";
+                ViewBag.FirstName = spinVM.FirstName;
+                ViewBag.Balance = _repository._player.Balance;
+                return View("SpinIt", spin); 
+            }
             else
                 return RedirectToAction("LuckList");
         }

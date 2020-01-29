@@ -19,5 +19,11 @@ namespace LuckySpin.Models
         {
             spins.Add(s);
         }
+
+        //Adding a method to reset the spins
+        public void ResetSpin()
+        {
+            spins.Clear();
+        }
     }
 }
